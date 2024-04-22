@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: hf-api
+  name: hf-api
+  namespace: hf-api
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+    nodePort: 32080
+  selector:
+    app: hf-api
+  type: NodePort
