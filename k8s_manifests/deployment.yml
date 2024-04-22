@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hf-api
+  name: hf-api
+  namespace: hf-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hf-api
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: hf-api
+    spec:
+      securityContext:
+        runAsUser: 1111
+      containers:
+      - image: pathfinder177/hfapi:1.1
+        name: hfapi
+        command: ["waitress-serve"]
+        args: ["--port", "$(SERVE_PORT)",  "--call", "app:create_app"]
+        envFrom:
+        - secretRef:
+            name: hf-api-secret
+        - configMapRef:
+            name: hf-api-cm
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "100m"
+          limits:
+            memory: "64Mi"
+            cpu: "200m"
+status: {}
